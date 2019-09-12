@@ -41,6 +41,79 @@ int pysqlite_step(sqlite3_stmt* statement, pysqlite_Connection* connection)
     return rc;
 }
 
+int _pysqlite_seterrorfromcode(int errorcode)
+{
+    switch (errorcode)
+    {
+        case SQLITE_ERROR:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_ERROR)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_INTERNAL:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_INTERNAL)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_PERM:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_PERM)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_ABORT:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_ABORT)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_BUSY:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_BUSY)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_LOCKED:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_LOCKED)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_NOMEM:
+            (void)PyErr_NoMemory();
+            break;
+        case SQLITE_READONLY:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_READONLY)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_INTERRUPT:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_INTERRUPT)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_IOERR:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_IOERR)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_CORRUPT:
+            PyErr_Format(pysqlite_DatabaseError, "%s (SQLITE_CORRUPT)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_NOTFOUND:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_NOTFOUND)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_FULL:
+            PyErr_Format(pysqlite_DatabaseError, "%s (SQLITE_FULL)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_PROTOCOL:
+            PyErr_Format(pysqlite_InternalError, "%s (SQLITE_PROTOCOL)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_EMPTY:
+            PyErr_Format(pysqlite_DatabaseError, "%s (SQLITE_EMPTY)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_SCHEMA:
+            PyErr_Format(pysqlite_OperationalError, "%s (SQLITE_SCHEMA)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_TOOBIG:
+            PyErr_Format(pysqlite_DataError, "%s (SQLITE_TOOBIG)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_CONSTRAINT:
+            PyErr_Format(pysqlite_OperationalError, "%s (SQLITE_CONSTRAINT)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_MISMATCH:
+            PyErr_Format(pysqlite_IntegrityError, "%s (SQLITE_MISMATCH)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_MISUSE:
+            PyErr_Format(pysqlite_ProgrammingError, "%s (SQLITE_MISUSE)", sqlite3_errstr(errorcode));
+            break;
+        case SQLITE_NOTADB:
+            PyErr_Format(pysqlite_ProgrammingError, "%s (SQLITE_NOTADB)", sqlite3_errstr(errorcode));
+            break;
+        default:
+            break;
+    }
+    return errorcode;
+}
+
 /**
  * Checks the SQLite error code and sets the appropriate DB-API exception.
  * Returns the error code (0 means no error occurred).
