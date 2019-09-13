@@ -33,9 +33,9 @@ int pysqlite_step(sqlite3_stmt* statement, pysqlite_Connection* connection)
          * returns NULL for "no-operation" statements */
         rc = SQLITE_OK;
     } else {
-        Py_BEGIN_ALLOW_THREADS
+//        Py_BEGIN_ALLOW_THREADS
         rc = sqlite3_step(statement);
-        Py_END_ALLOW_THREADS
+//        Py_END_ALLOW_THREADS
     }
 
     return rc;

@@ -243,9 +243,9 @@ PyObject* _pysqlite_fetch_one_row(pysqlite_Cursor* self)
         return NULL;
     }
 
-    Py_BEGIN_ALLOW_THREADS
+//    Py_BEGIN_ALLOW_THREADS
     numcols = sqlite3_data_count(self->statement->st);
-    Py_END_ALLOW_THREADS
+//    Py_END_ALLOW_THREADS
 
     row = PyTuple_New(numcols);
     if (!row)
@@ -277,9 +277,9 @@ PyObject* _pysqlite_fetch_one_row(pysqlite_Cursor* self)
                     break;
             }
         } else {
-            Py_BEGIN_ALLOW_THREADS
+//            Py_BEGIN_ALLOW_THREADS
             coltype = sqlite3_column_type(self->statement->st, i);
-            Py_END_ALLOW_THREADS
+//            Py_END_ALLOW_THREADS
             if (coltype == SQLITE_NULL) {
                 Py_INCREF(Py_None);
                 converted = Py_None;
@@ -556,9 +556,9 @@ PyObject* _pysqlite_query_execute(pysqlite_Cursor* self, int multiple, PyObject*
         }
 
         assert(rc == SQLITE_ROW || rc == SQLITE_DONE);
-        Py_BEGIN_ALLOW_THREADS
+//        Py_BEGIN_ALLOW_THREADS
         numcols = sqlite3_column_count(self->statement->st);
-        Py_END_ALLOW_THREADS
+//        Py_END_ALLOW_THREADS
         if (self->description == Py_None && numcols > 0) {
             Py_SETREF(self->description, PyTuple_New(numcols));
             if (!self->description) {
@@ -588,9 +588,9 @@ PyObject* _pysqlite_query_execute(pysqlite_Cursor* self, int multiple, PyObject*
 
         if (!multiple) {
             Py_DECREF(self->lastrowid);
-            Py_BEGIN_ALLOW_THREADS
+//            Py_BEGIN_ALLOW_THREADS
             lastrowid = sqlite3_last_insert_rowid(self->connection->db);
-            Py_END_ALLOW_THREADS
+//            Py_END_ALLOW_THREADS
             self->lastrowid = _pysqlite_long_from_int64(lastrowid);
         }
 
@@ -677,13 +677,13 @@ PyObject* pysqlite_cursor_executescript(pysqlite_Cursor* self, PyObject* args)
     Py_DECREF(result);
 
     while (1) {
-        Py_BEGIN_ALLOW_THREADS
+//        Py_BEGIN_ALLOW_THREADS
         rc = sqlite3_prepare_v2(self->connection->db,
                                 script_cstr,
                                 -1,
                                 &statement,
                                 &script_cstr);
-        Py_END_ALLOW_THREADS
+//        Py_END_ALLOW_THREADS
         if (rc != SQLITE_OK) {
             _pysqlite_seterror(self->connection->db, NULL);
             goto error;

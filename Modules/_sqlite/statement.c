@@ -92,13 +92,13 @@ int pysqlite_statement_create(pysqlite_Statement* self, pysqlite_Connection* con
         break;
     }
 
-    Py_BEGIN_ALLOW_THREADS
+//    Py_BEGIN_ALLOW_THREADS
     rc = sqlite3_prepare_v2(connection->db,
                             sql_cstr,
                             -1,
                             &self->st,
                             &tail);
-    Py_END_ALLOW_THREADS
+//    Py_END_ALLOW_THREADS
 
     self->db = connection->db;
 
@@ -213,9 +213,9 @@ void pysqlite_statement_bind_parameters(pysqlite_Statement* self, PyObject* para
     int num_params_needed;
     Py_ssize_t num_params;
 
-    Py_BEGIN_ALLOW_THREADS
+//    Py_BEGIN_ALLOW_THREADS
     num_params_needed = sqlite3_bind_parameter_count(self->st);
-    Py_END_ALLOW_THREADS
+//    Py_END_ALLOW_THREADS
 
     if (PyTuple_CheckExact(parameters) || PyList_CheckExact(parameters) || (!PyDict_Check(parameters) && PySequence_Check(parameters))) {
         /* parameters passed as sequence */
@@ -272,9 +272,9 @@ void pysqlite_statement_bind_parameters(pysqlite_Statement* self, PyObject* para
     } else if (PyDict_Check(parameters)) {
         /* parameters passed as dictionary */
         for (i = 1; i <= num_params_needed; i++) {
-            Py_BEGIN_ALLOW_THREADS
+//            Py_BEGIN_ALLOW_THREADS
             binding_name = sqlite3_bind_parameter_name(self->st, i);
-            Py_END_ALLOW_THREADS
+//            Py_END_ALLOW_THREADS
             if (!binding_name) {
                 PyErr_Format(pysqlite_ProgrammingError, "Binding %d has no name, but you supplied a dictionary (which has only names).", i);
                 return;
@@ -325,9 +325,9 @@ int pysqlite_statement_finalize(pysqlite_Statement* self)
 
     rc = SQLITE_OK;
     if (self->st) {
-        Py_BEGIN_ALLOW_THREADS
+//        Py_BEGIN_ALLOW_THREADS
         rc = sqlite3_finalize(self->st);
-        Py_END_ALLOW_THREADS
+//        Py_END_ALLOW_THREADS
         self->st = NULL;
     }
 
@@ -343,9 +343,9 @@ int pysqlite_statement_reset(pysqlite_Statement* self)
     rc = SQLITE_OK;
 
     if (self->in_use && self->st) {
-        Py_BEGIN_ALLOW_THREADS
+//        Py_BEGIN_ALLOW_THREADS
         rc = sqlite3_reset(self->st);
-        Py_END_ALLOW_THREADS
+//        Py_END_ALLOW_THREADS
 
         if (rc == SQLITE_OK) {
             self->in_use = 0;
@@ -363,9 +363,9 @@ void pysqlite_statement_mark_dirty(pysqlite_Statement* self)
 void pysqlite_statement_dealloc(pysqlite_Statement* self)
 {
     if (self->st) {
-        Py_BEGIN_ALLOW_THREADS
+//        Py_BEGIN_ALLOW_THREADS
         sqlite3_finalize(self->st);
-        Py_END_ALLOW_THREADS
+//        Py_END_ALLOW_THREADS
     }
 
     self->st = NULL;
